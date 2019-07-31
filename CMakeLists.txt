@@ -1,24 +1,34 @@
 cmake_minimum_required(VERSION 3.12)
 
-project("embed")
+project("embed" C CXX ASM_NASM)
 
 
-#
-enable_language(ASM)
-set(CMAKE_ASM_COMPILER "yasm")
-set(CMAKE_ASM_FLAGS "${CMAKE_ASM_NASM_FLAGS} -f win64 -X vc")
+function (embed_file name file)
+    get_property(languages GLOBAL PROPERTY ENABLED_LANGUAGES)
+    if (NOT "ASM_NASM" IN_LIST languages
+        OR NOT "C" IN_LIST languages)  # also required by ASM_NASM to determine word size
+        message(FATAL_ERROR "ASM_NASM or C not enabled")
+    endif ()
 
-set(NAME "cat")
-set(FILE "CMakeLists.txt")
+    set(target embed_${name})
 
-add_library(embed STATIC embed.s)
-set_target_properties(embed PROPERTIES LINKER_LANGUAGE CXX)
-target_compile_definitions(embed PRIVATE "NAME=${NAME}" "FILE='${FILE}'")
+    add_library(${target} STATIC embed.asm)
+    set_target_properties(${target} PROPERTIES LINKER_LANGUAGE C)
+    target_compile_options(${target} PRIVATE "-DNAME=${name}" "-DFILE='${file}'")
 
-configure_file(embed.h "${CMAKE_CURRENT_BINARY_DIR}/include/embed/${NAME}.h" @ONLY)
-target_include_directories(embed BEFORE INTERFACE "${CMAKE_CURRENT_BINARY_DIR}/include")
-#
+    if (WIN32)
+        target_compile_options(${target} PRIVATE "-Xvc")
+    endif ()
+
+    configure_file(embed.h "${CMAKE_BINARY_DIR}/${target}/include/embed/${name}.h" @ONLY)
+    target_include_directories(${target} BEFORE INTERFACE "${CMAKE_BINARY_DIR}/${target}/include")
+endfunction ()
 
 
-add_executable(embed_test test.cpp)
-target_link_libraries(embed_test embed)
+add_executable(test_c test.c)
+embed_file(cat test.c)
+embed_file(dog test.cpp)
+target_link_libraries(test_c embed_cat)
+
+add_executable(test_cpp test.cpp)
+target_link_libraries(test_cpp embed_cat embed_dog)

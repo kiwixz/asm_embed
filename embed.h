@@ -9,9 +9,9 @@ extern "C"
 {
 #endif
 
-    extern const unsigned char *embed_@NAME@_begin;
-    extern const unsigned char *embed_@NAME@_end;
-    extern const size_t embed_@NAME@_size;
+    extern const unsigned char *embed_@name@_begin;
+    extern const unsigned char *embed_@name@_end;
+    extern const size_t embed_@name@_size;
 
 #ifdef __cplusplus
 }
@@ -31,8 +31,8 @@ private:
 };
 #endif
 
-inline const Span<const unsigned char>& @NAME@() {
-    static Span<const unsigned char> span{details::embed_@NAME@_begin, details::embed_@NAME@_end};
+inline const Span<const unsigned char>& @name@() {
+    static Span<const unsigned char> span{details::embed_@name@_begin, details::embed_@name@_end};
     return span;
 }
 
