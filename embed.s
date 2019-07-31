@@ -4,17 +4,16 @@
     %error FILE not defined
 %endif
 
-
+bits 64
 section .rodata
 
-global NAME %+ _begin
-global NAME %+ _end
-global NAME %+ _size
-
+global embed_ %+ NAME %+ _begin
+global embed_ %+ NAME %+ _end
+global embed_ %+ NAME %+ _size
 
 begin: incbin FILE
 end:
 
-NAME %+ _begin: dq begin
-NAME %+ _end: dq end
-NAME %+ _size: dq end - begin
+embed_ %+ NAME %+ _begin: dq begin
+embed_ %+ NAME %+ _end: dq end
+embed_ %+ NAME %+ _size: dq end - begin
