@@ -11,8 +11,10 @@ global embed_ %+ NAME %+ _begin
 global embed_ %+ NAME %+ _end
 global embed_ %+ NAME %+ _size
 
-begin: incbin FILE
+begin:
+    incbin FILE
 end:
+    db 0x00  ; null terminator
 
 embed_ %+ NAME %+ _begin: dq begin
 embed_ %+ NAME %+ _end: dq end
