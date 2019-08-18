@@ -12,8 +12,7 @@
           "value": ""
         }
       ],
-      "cmakeCommandArgs": "--no-warn-unused-cli",
-      "ctestCommandArgs": "--output-on-failure -E check_clang"
+      "cmakeCommandArgs": "--no-warn-unused-cli"
     },
     {
       "name": "release",
@@ -27,8 +26,7 @@
           "value": ""
         }
       ],
-      "cmakeCommandArgs": "--no-warn-unused-cli",
-      "ctestCommandArgs": "--output-on-failure -E check_clang"
+      "cmakeCommandArgs": "--no-warn-unused-cli"
     }
   ]
 }
